@@ -1,0 +1,1 @@
+to use with tdm-mingw64, use the dynamic libs !
