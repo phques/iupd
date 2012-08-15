@@ -1,1 +1,7 @@
-to use with tdm-mingw64, use the dynamic libs !
+to use with tdm-mingw64, use the dynamic libs ! 
+simpler, no need for bunch of other libs 
+(but requires the iup.dll & cie)
+
+to link static, add :
+-liup -lgdi32 -lcomdlg32 -lcomctl32 -lole32 ... ??
+-lcd -lim ??

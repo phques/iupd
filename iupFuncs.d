@@ -4,21 +4,23 @@ struct Ihandle_;
 alias Ihandle_ Ihandle;
 //alias void Ihandle;
 
-extern(C) int IupOpen(int* argc, char*** argv);
-extern(C) void IupClose();
+extern(C) {
+    int IupOpen(int* argc, char*** argv);
+    void IupClose();
 
-extern(C) void IupControlsOpen();
-extern(C) void IupControlsClose();
+    void IupControlsOpen();
+    void IupControlsClose();
 
-extern(C) int IupMainLoop();
+    int IupMainLoop();
 
-extern(C) char *IupLoad(const char *filename);
-extern(C) Ihandle *IupGetHandle(const char *name);
+    char *IupLoad(const char *filename);
+    Ihandle *IupGetHandle(const char *name);
 
-extern(C) int IupShow(Ihandle *ih);
-extern(C) int IupHide(Ihandle *ih);
+    int IupShow(Ihandle *ih);
+    int IupHide(Ihandle *ih);
 
-extern(C) void IupMessage(const char *title, const char *message);
+    void IupMessage(const char *title, const char *message);
+}
 
 /+The IupLoopStep and the IupFlush+/
 
