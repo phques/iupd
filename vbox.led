@@ -1,11 +1,11 @@
-#IupVbox Example in LED 
-#Creates a dialog with buttons placed one above the other, showing the organization possibilities of the elements inside a vbox. The "ALIGNMENT" attribute is explored in all its possibilities to obtain the effects. 
+#IupVbox Example in LED
+#Creates a dialog with buttons placed one above the other, showing the organization possibilities of the elements inside a vbox. The "ALIGNMENT" attribute is explored in all its possibilities to obtain the effects.
 
-Alinhav = DIALOG [TITLE="Alignment", SIZE=140] 
+Alinhav = DIALOG [TITLE="Alignment", SIZE=140]
 (
 	FRAME [FGCOLOR="0 0 255", TITLE="VBOX"]
 	(
-		VBOX 
+		VBOX
 		(
 			FRAME [TITLE="Alignment = ALEFT"]
 			(
@@ -14,9 +14,9 @@ Alinhav = DIALOG [TITLE="Alignment", SIZE=140]
 					FILL(),
 					VBOX [ALIGNMENT=ALEFT]
 					(
-						BUTTON [SIZE=20x30]("1", NULL),
-						BUTTON [SIZE=30x30]("2", NULL),
-						BUTTON [SIZE=40x30]("3", NULL)
+						button1 = BUTTON [SIZE=20x30]("1", button1_cb),
+						button2 = BUTTON [SIZE=30x30]("2", NULL),
+						button3 = BUTTON [SIZE=40x30]("3", NULL)
 					),
 					FILL()
 				)
