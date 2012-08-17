@@ -4,13 +4,13 @@
 	<Project>
 		<Option title="testIupD" />
 		<Option pch_mode="2" />
-		<Option compiler="gdc_d_compiler_tdm_mingw64" />
+		<Option compiler="gnu_gdc_d_compiler_tdm_mingw64" />
 		<Build>
 			<Target title="Debug">
 				<Option output="bin\Debug\testIupD" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj\Debug\" />
 				<Option type="1" />
-				<Option compiler="gdc_d_compiler_tdm_mingw64" />
+				<Option compiler="gnu_gdc_d_compiler_tdm_mingw64" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -19,7 +19,7 @@
 				<Option output="bin\Release\testIupD" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj\Release\" />
 				<Option type="1" />
-				<Option compiler="gdc_d_compiler_tdm_mingw64" />
+				<Option compiler="gnu_gdc_d_compiler_tdm_mingw64" />
 				<Compiler>
 					<Add option="-O2" />
 				</Compiler>
@@ -30,16 +30,19 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-m32" />
 		</Compiler>
 		<Linker>
+			<Add option="-m32" />
 			<Add library="iup" />
 			<Add library="iupcontrols" />
 			<Add directory="$(#iup.lib)" />
 		</Linker>
-		<Unit filename="..\..\dev\iup-3.6-mingw4\static\etc\iup.rc">
+		<Unit filename="..\..\..\dev\iup-3.6-mingw4\etc\iup.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
 		<Unit filename="iupFuncs.d" />
+		<Unit filename="iupWidget.d" />
 		<Unit filename="main.d" />
 		<Unit filename="vbox.led" />
 		<Extensions>
