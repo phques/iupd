@@ -38,7 +38,8 @@
 			<Add library="iupcontrols" />
 			<Add directory="$(#iup.lib)" />
 		</Linker>
-		<Unit filename="..\..\..\dev\iup-3.6-mingw4\etc\iup.rc">
+		<Unit filename="iupD.manifest" />
+		<Unit filename="iupD.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
 		<Unit filename="iupFuncs.d" />
