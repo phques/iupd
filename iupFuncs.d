@@ -1,3 +1,8 @@
+// iupFuncs.d, defines IUP functions etc
+
+// Copyright 2012 Philippe Quesnel
+// Licensed under the Academic Free License version 3.0
+
 
 enum {
     IUP_IGNORE = -1,

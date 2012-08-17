@@ -1,3 +1,9 @@
+// iupWidget.d, simple D class to wrap a IUP control
+
+// Copyright 2012 Philippe Quesnel
+// Licensed under the Academic Free License version 3.0
+
+
 import std.stdio;
 import std.string;
 import std.exception;
