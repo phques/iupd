@@ -42,8 +42,8 @@
 		<Unit filename="iupD.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
-		<Unit filename="iupFuncs.d" />
-		<Unit filename="iupWidget.d" />
+		<Unit filename="iup\funcs.d" />
+		<Unit filename="iup\widget.d" />
 		<Unit filename="main.d" />
 		<Unit filename="vbox.led" />
 		<Extensions>
