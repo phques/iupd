@@ -13,6 +13,7 @@
 				<Option compiler="gdc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-fdebug" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -36,8 +37,8 @@
 			<Add library="iupcontrols" />
 			<Add directory="$(#iup.lib)" />
 		</Linker>
-		<Unit filename="iupFuncs.d" />
-		<Unit filename="iupWidget.d" />
+		<Unit filename="iup/funcs.d" />
+		<Unit filename="iup/widget.d" />
 		<Unit filename="main.d" />
 		<Unit filename="vbox.led" />
 		<Extensions>
