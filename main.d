@@ -15,25 +15,26 @@ import iup.funcs;
 import iup.widget;
 
 
-extern (C) int button1_cb(Ihandle* self) {
-    writeln("button1_cb");
+// shortcut for toStringz
+auto z(string s) { return s.toStringz; }
+
+
+// 'static' button callbacks
+extern (C) int static_button_cb(Ihandle* self) {
+    writeln("static_button_cb");
     return IUP_DEFAULT;
 }
 
-extern (C) int button2_cb(Ihandle* self) {
-    writeln("button2_cb, ret close");
-    return IUP_CLOSE;
-}
-
-auto z(string s) { return s.toStringz; }
 
 class MainWindow {
 
-    IupWidget dlg, button2, button3;
+    IupWidget dlg, button2, button3, button4;
+    int val = 123;
 
+    mixin SetCbMixin; // adds setCallback()()
 
     this() {
-        /* loads LED */
+        /* loads LED 'resource' file */
         char* error = IupLoad("vbox.led");
         enforce(!error, to!string(error));
 
@@ -41,19 +42,43 @@ class MainWindow {
         dlg = new IupWidget("Alinhav");
         button2 = new IupWidget("button2");
         button3 = new IupWidget("button3");
+        button4 = new IupWidget("button4");
 
-        // set button callback
-        IupSetFunction("button1_cb", &button1_cb);
+        // set button1 callback, "button1_cb" is specified as callback name in LED
+        IupSetFunction("button1_cb", &static_button_cb);
 
-        IupSetCallback(button2.ihandle, "ACTION", &button2_cb);
-        IupSetCallback(*button2, "ACTION", &button2_cb);
-        button2.SetCallback("ACTION", &button2_cb);
+        // or do it directly: button <--> callback
+        // (static function)
+        IupSetCallback(button2.ihandle, "ACTION", &static_button_cb);
+        IupSetCallback(*button2, "ACTION", &static_button_cb);
+        button2.SetCallback("ACTION", &static_button_cb);
 
-        // set button3 to inactive
-        button3["ACTIVE"] = "No";
+        // or callbacks = methods of MainWindow
+        this.setCallback!"button2Cb"(button2);
+        this.setCallback!"button3Cb"(button3);
+
+        // Set button4 to inactive (ie set widget's attribute "ACTIVE" = "No")
+        // same as IupStoreAttribute(button4.ihandle, "ACTIVE", "No");
+        //      or button4.StoreAttribute("ACTIVE", "No");
+        button4["ACTIVE"] = "No";
     }
 
-    void doit() {
+    // button event callback
+    int button2Cb(Ihandle* ihandle) {
+        assert(ihandle == button2.ihandle);
+        writeln("MainWindow.button2Cb val = ", val, " ihandle = ", ihandle);
+        return IUP_DEFAULT;
+    }
+
+    int button3Cb(Ihandle* ihandle) {
+        assert(ihandle == button3.ihandle);
+        writeln("MainWindow.button3Cb val = ", val, " ihandle = ", ihandle);
+        return IUP_CLOSE;
+    }
+
+    void run() {
+        writeln("click buttons 1,2,3 !");
+
         /* shows dialog */
         dlg.Show();
 
@@ -62,27 +87,24 @@ class MainWindow {
     }
 }
 
+//---------------------
 
 int main(string[] args)
 {
-    // convert 'args' to an argv array to pass to IupOpen
-    char*[] argv;
-    foreach (arg; args)
-        argv ~=  toUTFz!(char*)(arg);
-
-    /* IUP initialization */
-    char** argvp = argv.ptr;
-    int argc = args.length;
-
     try {
+        /* IUP initialization */
+        char*[] argv;
+        char** argvp;
+        int    argc = makeArgv(args, argv, argvp);
+
         IupOpen(&argc, &argvp);
         IupControlsOpen() ;
 
         auto window = new MainWindow;
-        window.doit();
+        window.run();
     }
     catch (Exception e) {
-        IupMessage("error", e.msg.z);
+        IupMessage("error", e.msg.toStringz);
     }
     finally {
         /* ends IUP */
@@ -91,4 +113,15 @@ int main(string[] args)
     }
 
 	return 0;
+}
+
+
+// convert 'args' to argc/argv to pass to IupOpen
+int makeArgv(string[] args, ref char*[] argv, ref char** argvp) {
+    // create char* array
+    foreach (arg; args)
+        argv ~=  toUTFz!(char*)(arg);
+
+    argvp = argv.ptr;
+    return argv.length;
 }

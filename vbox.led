@@ -28,7 +28,7 @@ Alinhav = DIALOG [TITLE="Alignment", SIZE=140]
 					FILL(),
 					VBOX [ALIGNMENT=ACENTER]
 					(
-						BUTTON [SIZE=20x30]("1", NULL),
+						button4 = BUTTON [SIZE=20x30]("1", NULL),
 						BUTTON [SIZE=30x30]("2", NULL),
 						BUTTON [SIZE=40x30]("3", NULL)
 					),

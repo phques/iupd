@@ -1,4 +1,4 @@
-// iupWidget.d, simple D class to wrap a IUP control
+// iup/widget.d, simple D class to wrap a IUP control
 
 // Copyright 2012 Philippe Quesnel
 // Licensed under the Academic Free License version 3.0
@@ -14,59 +14,107 @@ class IupWidget {
 
     Ihandle* _ihandle;  // the IUP C object
 
-    // lookup IUP control 'widgetName' from a loaded LED file
+    //------ CTORs -----
+
+    // lookup IUP control 'widgetName' from a loaded LED file (or set w. IupSetHandle())
+    // throws the error msg returned by Iup if if failed
     this(string widgetName) {
         _ihandle = enforce(IupGetHandle(widgetName.toStringz),
-                          "cant find '" ~ widgetName ~ "' in the LED resource");
+                          "Cant find '" ~ widgetName ~ "' in the LED resource");
     }
 
     this(Ihandle* ih) {
         _ihandle = ih;
     }
 
+    //------ accessing/casting to/the Ihandle* ------
+
     Ihandle* ihandle() { return _ihandle; }
 
-    Ihandle* opUnary(string s)() if (s == "*") { return _ihandle; }  // *widget ==> Ihandle*
-    Ihandle* opCall() { return _ihandle; }                  // widget() ==> Ihandle*
-    Ihandle* opCast(Type = Ihandle*)() { return _ihandle; } // cast(Ihandle*)
+    Ihandle* opUnary(string s)() if (s == "*") { return _ihandle; }  // *widget ==> widget._ihandle
+    Ihandle* opCall()                   { return _ihandle; }    // widget() ==> widget._ihandle
+    Ihandle* opCast(Type = Ihandle*)()  { return _ihandle; }    // cast(Ihandle*) ==> widget._ihandle
 
     //--------------------
 
-    // widget.FuncAbc(...) ==> IupFuncAbc(_ihandle,...)
+    // auto forwards method calls to calls of Iup functions, passing the ihandle:
+    //   widget.FuncAbc(...) ==> IupFuncAbc(_ihandle, ...)
     auto opDispatch(string iupFuncName, Args...)(Args args) {
-        debug writefln("opDispatch name:%s, Args%s", iupFuncName, typeid(Args));
 
         // Specialized: 1 string param, pass with .toStringz
         static if (Args.length==1 && is(Args[0] == string)) {
-            debug writeln("  specific 1string");
             return mixin("Iup" ~ iupFuncName ~ "(_ihandle, args[0].toStringz)");
         }
         // 2 string params
         else static if (Args.length==2 && is(Args[0] == string) && is(Args[1] == string)) {
-            debug writeln("  specific 2string");
             return mixin("Iup" ~ iupFuncName ~ "(_ihandle, args[0].toStringz, args[1].toStringz)");
         }
         // 1 string param + other non-string param
         else static if (Args.length==2 && is(Args[0] == string) && !is(Args[1] == string)) {
-            debug writeln("  specific 1string+?");
             return mixin("Iup" ~ iupFuncName ~ "(_ihandle, args[0].toStringz, args[1])");
         }
-        // generic case
+        // generic case, pass paramters as-is,
+        // caller must use .toStringz if passing D strings
         else {
-            debug writeln("  generic args");
             return mixin("Iup" ~ iupFuncName ~ "(_ihandle, args)");
         }
     }
 
+    //--------- setting/getting attributes ---------
+    // (attribName not case sensitive, will be passed to IUP uppercased)
 
-    // x = widget["attribX"];
-    char* opIndex(string attribName) {
-        return IupGetAttribute(_ihandle, toUpper(attribName).toStringz);
-    }
-
+    // Set attribute
     // widget["attribX"] = "value";
     void opIndexAssign(string value, string attribName) {
         IupStoreAttribute(_ihandle, toUpper(attribName).toStringz, value.toStringz);
     }
 
+    // Get attribute
+    // x = widget["attribX"];
+    char* opIndex(string attribName) {
+        return IupGetAttribute(_ihandle, toUpper(attribName).toStringz);
+    }
 }
+
+
+//--------------------
+
+
+/* Sets a callback for a IUP control = proxyCB()() bellow, which will call a method inside of 'this'.
+ * use: mixin SetCbMixin;  inside a class to add setCallback()() to the class, then
+ * use: this.setCallback!"methodName"(widget);   to set the D method as the widget's callback
+ */
+mixin template SetCbMixin() {
+
+    void setCallback(string methodName, this Class)(IupWidget widget) {
+        // save 'this' as an attribute in the IUP control
+        IupSetAttribute(widget.ihandle, "myObjThis", cast(char*)this);
+
+        // set the callback = proxyCB()()
+        IupSetCallback(widget.ihandle, "ACTION", &proxyCB!(Class, methodName));
+    }
+}
+
+/* C callback, called by IUP on events,
+ * will dispatch to a method inside a D object.
+ *   ie calls Class.callbackMethodName(ihandle)
+ *
+ * nb: ihandle is the IUP C object/control that generaed the event
+ */
+extern(C) int proxyCB(Class, string callbackMethodName)(Ihandle* ihandle) {
+    // get 'this' of type Class, saved as attrib in the widget
+    Class mythis = cast(Class)IupGetAttribute(ihandle, "myObjThis");
+
+    // call this.callbackMethodName(ihandle);
+    return mixin("mythis." ~ callbackMethodName ~"(ihandle)");
+}
+
+/*
+ The basic picture is thus like this:
+
+ 1) User clicks a button,
+   2) IUP calls the button's callback pass the button's ihandle (proxyCB(ihandle))
+     3) proxyCB() calls the registered Class.Method(button's ihandle)
+*/
+
+
