@@ -22,7 +22,12 @@ eg:
     IupSetCallback(*button2, "ACTION", &button2_cb);
     button2.SetCallback("ACTION".z, &button2_cb);
 
-    // button3 is a IupWidget
+    // or callbacks = methods of a class
+    // will call this.button2Cb(IHandle*)
+    button2.setCallback!"button2Cb"(this);
+    button3.setCallback!"button3Cb"(this);
+        
+    // set an attribute
     button3["ACTIVE"] = "No";
 
     // dlg is a IupWidget

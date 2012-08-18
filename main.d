@@ -31,8 +31,6 @@ class MainWindow {
     IupWidget dlg, button2, button3, button4;
     int val = 123;
 
-    mixin SetCbMixin; // adds setCallback()()
-
     this() {
         /* loads LED 'resource' file */
         char* error = IupLoad("vbox.led");
@@ -54,8 +52,8 @@ class MainWindow {
         button2.SetCallback("ACTION", &static_button_cb);
 
         // or callbacks = methods of MainWindow
-        this.setCallback!"button2Cb"(button2);
-        this.setCallback!"button3Cb"(button3);
+        button2.setCallback!"button2Cb"(this);
+        button3.setCallback!"button3Cb"(this);
 
         // Set button4 to inactive (ie set widget's attribute "ACTIVE" = "No")
         // same as IupStoreAttribute(button4.ihandle, "ACTIVE", "No");

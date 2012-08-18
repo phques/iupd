@@ -74,6 +74,16 @@ class IupWidget {
     char* opIndex(string attribName) {
         return IupGetAttribute(_ihandle, toUpper(attribName).toStringz);
     }
+
+    // Set the our callback = destThis.methodName, (through a proxy)
+    // save the destination 'this' in attribute "myObjThis"
+    void setCallback(string methodName, Class)(Class destThis) {
+        // save 'this' as an attribute in the IUP control
+        IupSetAttribute(_ihandle, "myObjThis", cast(char*)destThis);
+
+        // set the callback = proxyCB()()
+        IupSetCallback(_ihandle, "ACTION", &proxyCB!(Class, methodName));
+    }
 }
 
 
@@ -83,10 +93,12 @@ class IupWidget {
 /* Sets a callback for a IUP control = proxyCB()() bellow, which will call a method inside of 'this'.
  * use: mixin SetCbMixin;  inside a class to add setCallback()() to the class, then
  * use: this.setCallback!"methodName"(widget);   to set the D method as the widget's callback
+ *
+ * 'deprecated', use widget.setCallback()() !!! ;-)
  */
 mixin template SetCbMixin() {
 
-    void setCallback(string methodName, this Class)(IupWidget widget) {
+    deprecated void setCallback(string methodName, this Class)(IupWidget widget) {
         // save 'this' as an attribute in the IUP control
         IupSetAttribute(widget.ihandle, "myObjThis", cast(char*)this);
 
