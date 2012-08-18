@@ -59,13 +59,13 @@ void doit() {
 
 int main(string[] args)
 {
-    // convert 'args' to an argv array to pass to window.show(argc, char** argv)
+    // convert 'args' to an argv array to pass to IupOpen
     char*[] argv;
     foreach (arg; args)
         argv ~=  toUTFz!(char*)(arg);
 
     /* IUP initialization */
-    char **argvp = argv.ptr;
+    char** argvp = argv.ptr;
     int argc = args.length;
 
     IupOpen(&argc, &argvp);
