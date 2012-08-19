@@ -32,14 +32,15 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add directory=".." />
 		</Compiler>
 		<Linker>
 			<Add library="iup" />
 			<Add library="iupcontrols" />
 			<Add directory="$(#iup.lib)" />
 		</Linker>
-		<Unit filename="iup/funcs.d" />
-		<Unit filename="iup/widget.d" />
+		<Unit filename="../iup/funcs.d" />
+		<Unit filename="../iup/widget.d" />
 		<Unit filename="main.d" />
 		<Unit filename="vbox.led" />
 		<Extensions>
