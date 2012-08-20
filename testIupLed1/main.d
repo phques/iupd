@@ -32,10 +32,6 @@ class MainWindow {
     int val = 123;
 
     this() {
-        /* loads LED 'resource' file */
-        char* error = IupLoad("vbox.led");
-        enforce(!error, to!string(error));
-
         // get handles to dialog & some buttons
         dlg = new IupWidget("Alinhav");
         button2 = new IupWidget("button2");
@@ -97,6 +93,10 @@ int main(string[] args)
 
         IupOpen(&argc, &argvp);
         IupControlsOpen() ;
+
+        /* loads LED 'resource' file */
+        char* error = IupLoad("vbox.led");
+        enforce(!error, to!string(error));
 
         auto window = new MainWindow;
         window.run();

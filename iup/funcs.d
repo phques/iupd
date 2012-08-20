@@ -43,6 +43,7 @@ extern(C) {
 
     char *IupLoad(const char *filename);
     Ihandle *IupGetHandle(const char *name);
+    void IupDestroy(Ihandle *);
 
     void IupStoreAttribute(Ihandle *ih, const char *name, const char *value);
     void IupSetAttribute(Ihandle *ih, const char *name, const char *value);

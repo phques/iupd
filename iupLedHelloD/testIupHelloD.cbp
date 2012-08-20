@@ -2,12 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="testIupD" />
+		<Option title="testIupHelloD" />
 		<Option pch_mode="2" />
 		<Option compiler="gdc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/testIupD" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/testIupHelloD" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gdc" />
@@ -21,7 +21,7 @@
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/testIupD" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/testIupHelloD" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gdc" />
@@ -36,7 +36,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add directory=".." />
+			<Add directory="$(#iupd.include)" />
 		</Compiler>
 		<Linker>
 			<Add library="iup" />
@@ -44,8 +44,8 @@
 			<Add library="iupd" />
 			<Add directory="$(#iup.lib)" />
 		</Linker>
+		<Unit filename="hello.led" />
 		<Unit filename="main.d" />
-		<Unit filename="vbox.led" />
 		<Extensions>
 			<code_completion />
 			<envvars />

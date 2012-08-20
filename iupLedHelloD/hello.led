@@ -1,0 +1,14 @@
+# Hello world dialog
+
+okButton = Button[PADDING=10]("Close", ok_butt_cb)
+
+main = DIALOG [RESIZE=NO,TITLE="Hello", DEFAULTESC="okButton", DEFAULTENTER="okButton"]
+(
+  Vbox[GAP=5, MARGIN=5x5](
+    Frame(
+      Label[ALIGNEMENT="ACENTER:ACENTER", PADDING=15,
+            FONT="Helvetica, BOLD ITALIC 30"]("Hello World!")
+    ),
+    Hbox( fill(), okButton)
+  )
+)
