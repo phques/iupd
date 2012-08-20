@@ -6,7 +6,6 @@ import std.utf;
 import std.conv;
 
 import iup.funcs;
-import iup.widget;
 
 
 extern(C) int ok_butt_cb(Ihandle* self) {
