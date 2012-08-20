@@ -39,9 +39,9 @@
 			<Add directory="$(#iupd.include)" />
 		</Compiler>
 		<Linker>
+			<Add library="iupd" />
 			<Add library="iup" />
 			<Add library="iupcontrols" />
-			<Add library="iupd" />
 			<Add directory="$(#iup.lib)" />
 		</Linker>
 		<Unit filename="hello.led" />

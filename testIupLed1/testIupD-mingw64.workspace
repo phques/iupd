@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="testIupD">
+		<Project filename="testIupD-mingw64.cbp">
+			<Depends filename="../iup/iupdlib-mingw64.cbp" />
+		</Project>
+		<Project filename="../iup/iupdlib-mingw64.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>

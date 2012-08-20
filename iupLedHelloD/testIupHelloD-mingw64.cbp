@@ -2,24 +2,26 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="testIupD" />
+		<Option title="testIupHelloD" />
 		<Option pch_mode="2" />
 		<Option compiler="gnu_gdc_d_compiler_tdm_mingw64" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin\Debug\testIupD" prefix_auto="1" extension_auto="1" />
+				<Option output="bin\Debug\testIupHelloD" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj\Debug\" />
 				<Option type="1" />
 				<Option compiler="gnu_gdc_d_compiler_tdm_mingw64" />
 				<Compiler>
+					<Add option="-funittest" />
 					<Add option="-g" />
+					<Add option="-fdebug" />
 				</Compiler>
 				<Linker>
 					<Add directory="$(#iupd.lib)\bin\Debug" />
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin\Release\testIupD" prefix_auto="1" extension_auto="1" />
+				<Option output="bin\Release\testIupHelloD" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj\Release\" />
 				<Option type="1" />
 				<Option compiler="gnu_gdc_d_compiler_tdm_mingw64" />
@@ -44,17 +46,22 @@
 			<Add library="iupcontrols" />
 			<Add directory="$(#iup.lib)" />
 		</Linker>
-		<Unit filename="iupD.manifest" />
-		<Unit filename="iupD.rc">
-			<Option compilerVar="WINDRES" />
-		</Unit>
+		<Unit filename="hello.led" />
 		<Unit filename="main.d" />
-		<Unit filename="vbox.led" />
 		<Extensions>
 			<code_completion />
 			<envvars />
 			<debugger />
 			<lib_finder disable_auto="1" />
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
