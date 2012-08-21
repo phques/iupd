@@ -9,7 +9,9 @@ import std.exception;
 import std.string;
 import std.conv;
 
-import iup.funcs;
+import iup.iup;
+import iup.controls;
+import iup.utild;
 
 
 extern(C) int quit_cb(Ihandle* self) {

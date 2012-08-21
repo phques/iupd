@@ -1,4 +1,5 @@
 // iup/widget.d, simple D class to wrap a IUP control
+module iup.widget;
 
 // Copyright 2012 Philippe Quesnel
 // Licensed under the Academic Free License version 3.0
@@ -8,7 +9,8 @@ import std.stdio;
 import std.string;
 import std.exception;
 
-import iup.funcs;
+import iup.iup;
+
 
 class IupWidget {
 
@@ -88,24 +90,6 @@ class IupWidget {
 
 
 //--------------------
-
-
-/* Sets a callback for a IUP control = proxyCB()() bellow, which will call a method inside of 'this'.
- * use: mixin SetCbMixin;  inside a class to add setCallback()() to the class, then
- * use: this.setCallback!"methodName"(widget);   to set the D method as the widget's callback
- *
- * 'deprecated', use widget.setCallback()() !!! ;-)
- */
-mixin template SetCbMixin() {
-
-    deprecated void setCallback(string methodName, this Class)(IupWidget widget) {
-        // save 'this' as an attribute in the IUP control
-        IupSetAttribute(widget.ihandle, "myObjThis", cast(char*)this);
-
-        // set the callback = proxyCB()()
-        IupSetCallback(widget.ihandle, "ACTION", &proxyCB!(Class, methodName));
-    }
-}
 
 /* C callback, called by IUP on events,
  * will dispatch to a method inside a D object.

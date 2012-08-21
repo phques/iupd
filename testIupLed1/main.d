@@ -11,7 +11,9 @@ import std.utf;
 import std.exception;
 import std.conv;
 
-import iup.funcs;
+import iup.iup;
+import iup.controls;
+import iup.utild;
 import iup.widget;
 
 
