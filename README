@@ -1,4 +1,5 @@
 Using IUP GUI toolkit with D the language
+IUP Version 3.6
 
 IUP is licensed under MIT license ,  see COPYRIGHT-IUP
 IUP-D is Licensed under the Academic Free License version 3.0
@@ -12,15 +13,12 @@ uses opDisptach() to forward calls to the real IupXxx functions,
 also overrides index operators to read/set attributes (IupStoreAttribute)
 eg: 
 
-    auto z(string s) { return s.toStringz; }
-    ...
-
     IupSetFunction("button1_cb", &button1_callback);
 
     // button2 is a IupWidget
     IupSetCallback(button2.ihandle, "ACTION", &button2_cb);
     IupSetCallback(*button2, "ACTION", &button2_cb);
-    button2.SetCallback("ACTION".z, &button2_cb);
+    button2.SetCallback("ACTION", &button2_cb);
 
     // or callbacks = methods of a class
     // will call this.button2Cb(IHandle*)
