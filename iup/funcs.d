@@ -3,6 +3,8 @@
 // Copyright 2012 Philippe Quesnel
 // Licensed under the Academic Free License version 3.0
 
+import std.utf;
+
 
 enum {
     IUP_IGNORE = -1,
@@ -23,7 +25,7 @@ enum {
 extern(C) {
 
     // the real C struct Ihandle_ .. contains fields
-    struct Ihandle_;
+    struct Ihandle_ {};
     alias Ihandle_ Ihandle;
 
     alias int function(Ihandle*) Icallback;
@@ -47,14 +49,36 @@ extern(C) {
 
     void IupStoreAttribute(Ihandle *ih, const char *name, const char *value);
     void IupSetAttribute(Ihandle *ih, const char *name, const char *value);
+    Ihandle* IupSetAttributes (Ihandle* ih, const char *str);
     char *IupGetAttribute(Ihandle *ih, const char *name);
+
+    void      IupSetAttributeHandle(Ihandle* ih, const char* name, Ihandle* ih_named);
+    Ihandle*  IupGetAttributeHandle(Ihandle* ih, const char* name);
+
 
     int IupShow(Ihandle *ih);
     int IupHide(Ihandle *ih);
 
     void IupMessage(const char *title, const char *message);
+
+    Ihandle* IupDialog(Ihandle *child);
+    Ihandle* IupButton(const char* title, const char* action);
+    Ihandle* IupVbox(Ihandle* child, ...);
+    Ihandle*  IupLabel(const char* title);
 }
 
+
+// helper func to call IupOpen with string[] args
+int IupOpenD(string[] args) {
+    // create char* array
+    char*[] argv;
+    foreach (arg; args)
+        argv ~=  toUTFz!(char*)(arg);
+
+    int argc = argv.length;
+    char** argvp = argv.ptr;
+    return IupOpen(&argc, &argvp);
+}
 
 
 

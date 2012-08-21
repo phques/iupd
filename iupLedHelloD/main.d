@@ -2,7 +2,6 @@
 import std.stdio;
 import std.exception;
 import std.string;
-import std.utf;
 import std.conv;
 
 import iup.funcs;
@@ -16,11 +15,7 @@ int main(string[] args)
 {
     try {
         /* IUP initialization */
-        char*[] argv;
-        char** argvp;
-        int    argc = makeArgv(args, argv, argvp);
-
-        IupOpen(&argc, &argvp);
+        IupOpenD(args);
         IupControlsOpen() ;
 
         /* loads LED 'resource' file */
@@ -50,16 +45,5 @@ int main(string[] args)
     }
 
 	return 0;
-}
-
-
-// convert 'args' to argc/argv to pass to IupOpen
-int makeArgv(string[] args, ref char*[] argv, ref char** argvp) {
-    // create char* array
-    foreach (arg; args)
-        argv ~=  toUTFz!(char*)(arg);
-
-    argvp = argv.ptr;
-    return argv.length;
 }
 
