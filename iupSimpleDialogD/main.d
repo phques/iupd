@@ -1,3 +1,8 @@
+// simple IUP dialog app, uses only direct IUP C
+
+// Copyright 2012 Philippe Quesnel
+// Licensed under the Academic Free License version 3.0
+
 
 import std.stdio;
 import std.exception;
