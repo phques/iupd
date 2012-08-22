@@ -25,16 +25,23 @@ class IupWidget {
                           "Cant find '" ~ widgetName ~ "' in the LED resource");
     }
 
-    this(Ihandle* ih) {
+    this(Ihandle* ih = null) {
         _ihandle = ih;
+    }
+
+    //-------
+
+    void Destroy() {
+        IupDestroy(_ihandle);
+        _ihandle = null;
     }
 
     //------ accessing/casting to/the Ihandle* ------
 
     Ihandle* ihandle() { return _ihandle; }
 
-    Ihandle* opUnary(string s)() if (s == "*") { return _ihandle; }  // *widget ==> widget._ihandle
     Ihandle* opCall()                   { return _ihandle; }    // widget() ==> widget._ihandle
+    Ihandle* opUnary(string s)() if (s == "*") { return _ihandle; }  // *widget ==> widget._ihandle
     Ihandle* opCast(Type = Ihandle*)()  { return _ihandle; }    // cast(Ihandle*) ==> widget._ihandle
 
     //--------------------
@@ -45,15 +52,15 @@ class IupWidget {
 
         // Specialized: 1 string param, pass with .toStringz
         static if (Args.length==1 && is(Args[0] == string)) {
-            return mixin("Iup" ~ iupFuncName ~ "(_ihandle, args[0].toStringz)");
+            return mixin("Iup" ~ iupFuncName)(_ihandle, args[0].toStringz);
         }
         // 2 string params
         else static if (Args.length==2 && is(Args[0] == string) && is(Args[1] == string)) {
-            return mixin("Iup" ~ iupFuncName ~ "(_ihandle, args[0].toStringz, args[1].toStringz)");
+            return mixin("Iup" ~ iupFuncName)(_ihandle, args[0].toStringz, args[1].toStringz);
         }
         // 1 string param + other non-string param
         else static if (Args.length==2 && is(Args[0] == string) && !is(Args[1] == string)) {
-            return mixin("Iup" ~ iupFuncName ~ "(_ihandle, args[0].toStringz, args[1])");
+            return mixin("Iup" ~ iupFuncName)(_ihandle, args[0].toStringz, args[1]);
         }
         // generic case, pass paramters as-is,
         // caller must use .toStringz if passing D strings
