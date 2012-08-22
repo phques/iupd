@@ -1,5 +1,6 @@
 Using IUP GUI toolkit with D the language
-IUP Version 3.6
+IUP Version 3.6 
+http://www.tecgraf.puc-rio.br/iup/
 
 IUP is licensed under MIT license ,  see COPYRIGHT-IUP
 IUP-D is Licensed under the Academic Free License version 3.0
@@ -30,3 +31,6 @@ eg:
 
     // dlg is a IupWidget
     dlg.Show();
+
+Philippe Quesnel
+kwez555@hotmail.com
