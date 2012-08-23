@@ -60,19 +60,19 @@ void titi(Args...)(Args args) {
     writeln(typeid(toto.argsSpecs));
 }
 
-template chgTypes(alias spec) {
-    static if (is(spec.Type==string))
+template chgTypes(Type) {
+    static if (is(Type==string))
         alias const(char)* chgTypes;
     else
-        alias spec.Type chgTypes;
+        alias Type chgTypes;
 }
 
 void toutou(Args...)(Args args) {
     alias staticMap!(chgTypes, Args) TotoType;
     TotoType toto;
 
-    writeln(typeid(toto));
     writeln(typeid(Args));
+    writeln(typeid(TotoType));
 }
 
 int main(string[] args)
@@ -98,8 +98,8 @@ int main(string[] args)
     writeln("\ntiti()");
     titi('a', 10, "allo");
 
-    writeln("\toutou()");
-//    toutou('a', 10, "allo");
+    writeln("\ntoutou()");
+    toutou('a', 10, "allo");
 
 return 0;
 }
