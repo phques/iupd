@@ -1,4 +1,3 @@
-// .. ### tests w.i.p ###
 
 import std.stdio;
 import std.exception;
@@ -24,7 +23,15 @@ IupWidget Iup(string name, Args...)(Args args) {
     Ihandle* ih = null;
 
     writeln(typeid(Args));
-    writeln(args);
+
+/+    for (int i=0; i < Args.length; i++)
+        writeln(Args[i]);+/
+    string[] ss;
+    foreach (arg; args) {
+        writefln(" %s : %s", typeid(arg), arg);
+        ss ~= to!string(arg);
+    }
+    writeln(ss);
 
     // 1 string param
     static if (Args.length==1 && is(Args[0] == string)) {
