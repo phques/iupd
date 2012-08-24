@@ -28,12 +28,14 @@ extern (C) int static_button_cb(Ihandle* self) {
 }
 
 
+
 class MainWindow {
 
     IupWidget dlg, button2, button3, button4;
     int val = 123;
 
     this() {
+
         // get handles to dialog & some buttons
         dlg = new IupWidget("Alinhav");
         button2 = new IupWidget("button2");
@@ -48,10 +50,12 @@ class MainWindow {
         IupSetCallback(button2.ihandle, "ACTION", &static_button_cb);
         IupSetCallback(*button2, "ACTION", &static_button_cb);
         button2.SetCallback("ACTION", &static_button_cb);
+        button2.SetAttribute("TITLE", "coucou");
 
         // or callbacks = methods of MainWindow
         button2.setCallback!"button2Cb"(this);
-        button3.setCallback!"button3Cb"(this);
+//      button3.setCallback!"button3Cb"(this);
+        button3.setDelegate(&button3Cb);
 
         // Set button4 to inactive (ie set widget's attribute "ACTIVE" = "No")
         // same as IupStoreAttribute(button4.ihandle, "ACTIVE", "No");
@@ -73,7 +77,7 @@ class MainWindow {
     }
 
     void run() {
-        writeln("click buttons 1,2,3 !");
+        writeln("\n***click buttons 1,2,3 !***");
 
         /* shows dialog */
         dlg.Show();
@@ -87,6 +91,7 @@ class MainWindow {
 
 int main(string[] args)
 {
+
     try {
         /* IUP initialization */
         IupOpenD(args);

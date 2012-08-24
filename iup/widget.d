@@ -83,12 +83,21 @@ class IupWidget {
 
     // Set the our callback = destThis.methodName, (called through proxyCB())
     // save the destination 'this' in attribute "myObjThis"
+    // eg. button2.setCallback!"button2Cb"(this) => will call this.button2Cb
     void setCallback(string methodName, Class)(Class destThis) {
         // save 'this' as an attribute in the IUP control
         IupSetAttribute(_ihandle, "myObjThis", cast(char*)destThis);
 
         // set the callback = proxyCB()()
         IupSetCallback(_ihandle, "ACTION", &proxyCB!(Class, methodName));
+    }
+
+    // button2.setDelegate(&theObject.theMethod);
+    // cf proxy() below
+    void setDelegate(CbDelegate del) {
+        this.SetAttribute("myObjThis", cast(char*)del.ptr);
+        this.SetAttribute("myCbMethod", cast(char*)del.funcptr);
+        this.SetCallback("ACTION", &proxy);
     }
 }
 
@@ -108,7 +117,6 @@ extern(C) int proxyCB(Class, string callbackMethodName)(Ihandle* ihandle) {
     // call this.callbackMethodName(ihandle);
     return mixin("mythis."~callbackMethodName~"(ihandle)");
 }
-
 /*
  The basic picture is thus like this:
 
@@ -116,6 +124,28 @@ extern(C) int proxyCB(Class, string callbackMethodName)(Ihandle* ihandle) {
    2) IUP calls the button's callback passing the button's ihandle (proxyCB(ihandle))
      3) proxyCB() calls the registered Class.Method(button's ihandle)
 */
+
+/*---------------------------*/
+
+/* an alternative is to pass a delegate to a setDelegate() func, that :
+  saves delegate.ptr ('this') as an attribute
+  saves delegate.funcptr (&class.method) as an attribute
+  sets the callback to a function proxy(Ihandle*) that :
+    gets back the 2 attributes and
+    sets the ptr/funcptr of a delegate variable .. and
+    calls the delegate !!
+*/
+alias int delegate(Ihandle* ihandle) CbDelegate;
+alias int function(Ihandle* ihandle) CbFunction;
+
+extern(C) int proxy(Ihandle* ihandle) {
+    CbDelegate del;
+    del.ptr     = cast(void*)IupGetAttribute(ihandle, "myObjThis");
+    del.funcptr = cast(CbFunction)IupGetAttribute(ihandle, "myCbMethod");
+
+    return del(ihandle);
+}
+
 
 /*------------------------------------*/
 
