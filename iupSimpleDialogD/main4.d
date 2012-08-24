@@ -9,7 +9,7 @@ void tata(int i, char c, immutable(char)* s) {
     writeln(i,c,s);
 }
 
-void toto(string name, Args...)(Args args) {
+void toto(Args...)(Args args) {
     writeln(typeid(Args));
     writeln(args[0]);
     writeln(args[1..$]);
@@ -60,6 +60,7 @@ void titi(Args...)(Args args) {
     writeln(typeid(toto.argsSpecs));
 }
 
+
 template chgTypes(Type) {
     static if (is(Type==string))
         alias const(char)* chgTypes;
@@ -68,11 +69,25 @@ template chgTypes(Type) {
 }
 
 void toutou(Args...)(Args args) {
-    alias staticMap!(chgTypes, Args) TotoType;
-    TotoType toto;
+    alias staticMap!(chgTypes, Args) NewTypes;
+    NewTypes newArgs;
 
     writeln(typeid(Args));
-    writeln(typeid(TotoType));
+    writeln(typeid(NewTypes));
+
+    foreach(i, arg; args) {
+        static if (is(typeof(arg) == string))
+            newArgs[i] = arg.toStringz;
+        else
+            newArgs[i] = arg;
+    }
+
+    foreach(arg; newArgs) {
+        static if (is(typeof(arg) : const(char)*))
+            writeln(typeid(arg), to!string(arg));
+        else
+            writeln(typeid(arg), arg);
+    }
 }
 
 int main(string[] args)
@@ -87,10 +102,10 @@ int main(string[] args)
     writeln(typeid(e.Types));
 
     writeln("\ntoto()");
-    toto!"allo"(1,'a',"stt");
+    toto(1,'a',"stt");
 
     writeln("\nToto");
-    alias Toto!(int,char) TToto;
+    alias Toto!(int,char,string) TToto;
     TToto atoto;
     writeln(typeid(atoto));
     writeln(typeid(atoto.argsSpecs));
