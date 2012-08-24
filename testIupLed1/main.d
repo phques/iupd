@@ -10,6 +10,7 @@ import std.string;
 import std.utf;
 import std.exception;
 import std.conv;
+import std.typecons;
 
 import iup.iup;
 import iup.controls;
@@ -34,10 +35,17 @@ class MainWindow {
     IupWidget dlg, button2, button3, button4;
     int val = 123;
 
+    ~this() {
+        debug writeln("MainWindow.~this()");
+//        destroy(dlg);
+//        clear(dlg);
+        dlg.Destroy();
+    }
+
     this() {
 
         // get handles to dialog & some buttons
-        dlg = new IupWidget("Alinhav");
+        dlg = new IupWidget("Alinhav", Yes.Owner);
         button2 = new IupWidget("button2");
         button3 = new IupWidget("button3");
         button4 = new IupWidget("button4");
@@ -101,17 +109,21 @@ int main(string[] args)
         char* error = IupLoad("vbox.led");
         enforce(!error, to!string(error));
 
-        auto window = new MainWindow;
+        scope auto window = new MainWindow;
         window.run();
+
+        debug writeln("window, leaving scope");
     }
     catch (Exception e) {
         IupMessage("error", e.msg.toStringz);
     }
     finally {
+        debug writeln("main, finally, scleanup IUP");
         /* ends IUP */
         IupControlsClose();
         IupClose();
     }
 
+    debug writeln("main, exiting");
 	return 0;
 }

@@ -9,6 +9,7 @@ import std.stdio;
 import std.string;
 import std.exception;
 import std.typetuple;
+import std.typecons;
 
 import iup.iup;
 import iup.utild;
@@ -18,25 +19,42 @@ import iup.utild;
 class IupWidget {
 
     Ihandle* _ihandle;  // the IUP C object
+    bool owner = false; // 'owns' the ihandle
 
     //------ CTORs -----
 
     // lookup IUP control 'widgetName' from a loaded LED file (or set w. IupSetHandle())
     // throws if it failed
-    this(string widgetName) {
+    this(string widgetName, Flag!"Owner" owner = No.Owner) {
         _ihandle = enforce(IupGetHandle(widgetName.toStringz),
                           "Cant find '" ~ widgetName ~ "' in the LED resource");
+        this.owner = owner;
     }
 
-    this(Ihandle* ih = null) {
+    this(Ihandle* ih = null, Flag!"Owner" owner = No.Owner) {
         _ihandle = ih;
+        this.owner = owner;
     }
 
     //-------
 
+    // destroy the ihandle if we own it
+    ~this() {
+        debug writeln("IupWidget ~this()");
+        if (owner) {
+            debug writeln("IupWidget ~this() owner");
+            Destroy();
+            owner = false;
+        }
+    }
+
     void Destroy() {
-        IupDestroy(_ihandle);
-        _ihandle = null;
+        debug writeln("IupWidget Destroy");
+        if (_ihandle != null){
+            IupDestroy(_ihandle);
+            _ihandle = null;
+            owner = false;
+        }
     }
 
     //------ accessing/casting to/the Ihandle* ------
