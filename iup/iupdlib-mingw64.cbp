@@ -38,7 +38,10 @@
 		<Linker>
 			<Add option="-m32" />
 		</Linker>
-		<Unit filename="funcs.d" />
+		<Unit filename="controls.d" />
+		<Unit filename="iup.d" />
+		<Unit filename="types.d" />
+		<Unit filename="utild.d" />
 		<Unit filename="widget.d" />
 		<Extensions>
 			<code_completion />
