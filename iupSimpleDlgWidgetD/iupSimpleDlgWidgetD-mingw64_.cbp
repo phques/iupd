@@ -2,32 +2,35 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="iupdlib-mingw64" />
+		<Option title="iupSimpleDlgWidgetD" />
 		<Option pch_mode="2" />
 		<Option compiler="gnu_gdc_d_compiler_tdm_mingw64" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin\Debug\iupd" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
+				<Option output="bin\Debug\iupSimpleDlgWidgetD" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj\Debug\" />
-				<Option type="2" />
+				<Option type="1" />
 				<Option compiler="gnu_gdc_d_compiler_tdm_mingw64" />
 				<Compiler>
+					<Add option="-funittest" />
 					<Add option="-g" />
 					<Add option="-fdebug" />
 				</Compiler>
+				<Linker>
+					<Add directory="$(#iupd.lib)\bin\Debug" />
+				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin\Release\iupd" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
+				<Option output="bin\Release\iupSimpleDlgWidgetD" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj\Release\" />
-				<Option type="2" />
+				<Option type="1" />
 				<Option compiler="gnu_gdc_d_compiler_tdm_mingw64" />
 				<Compiler>
 					<Add option="-O2" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add directory="$(#iupd.lib)\bin\Release" />
 				</Linker>
 			</Target>
 		</Build>
@@ -38,17 +41,26 @@
 		</Compiler>
 		<Linker>
 			<Add option="-m32" />
+			<Add library="iup" />
+			<Add library="iupcontrols" />
+			<Add library="iupd" />
+			<Add directory="$(#iup.lib)" />
 		</Linker>
-		<Unit filename="controls.d" />
-		<Unit filename="iup.d" />
-		<Unit filename="types.d" />
-		<Unit filename="utild.d" />
-		<Unit filename="widget.d" />
+		<Unit filename="mainIupCreate.d" />
 		<Extensions>
 			<code_completion />
 			<envvars />
 			<debugger />
 			<lib_finder disable_auto="1" />
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

@@ -25,7 +25,7 @@ int main(string[] args)
         IupOpenD(args);
         IupControlsOpen() ;
 
-        IupWidget quit_bt, vbox, dialog;
+        IupWidget quit_bt, vbox;
 
         /* Creating the button */
         quit_bt = Iup!"Button"("Quit", nullz);
@@ -41,11 +41,10 @@ int main(string[] args)
         vbox["GAP"] = "5";
 
         /* Creating the dialog */
-        dialog = Iup!"Dialog"(vbox);
+        scope auto dialog = Iup!"Dialog"(vbox);
         dialog["TITLE"] = "Dialog Title";
         dialog.SetAttributeHandle("DEFAULTESC", quit_bt);
         dialog.SetAttributeHandle("DEFAULTENTER", quit_bt);
-        scope(exit) dialog.Destroy();
 
         dialog.Show();
 

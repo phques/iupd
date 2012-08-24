@@ -47,6 +47,10 @@
 			<Add directory="$(#iup.lib)" />
 		</Linker>
 		<Unit filename="hello.led" />
+		<Unit filename="iupD.manifest" />
+		<Unit filename="iupD.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="main.d" />
 		<Extensions>
 			<code_completion />

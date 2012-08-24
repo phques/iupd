@@ -42,6 +42,7 @@ int main(string[] args)
 
         /* Creating the dialog */
         dialog = IupDialog(vbox);
+        scope(exit) IupDestroy(dialog);
         IupSetAttribute(dialog, "TITLE", "Dialog Title");
         IupSetAttributeHandle(dialog, "DEFAULTESC", quit_bt);
 
@@ -49,8 +50,6 @@ int main(string[] args)
 
         /* main loop */
         IupMainLoop();
-
-        IupDestroy(dialog);
     }
     catch (Exception e) {
         IupMessage("error", e.msg.toStringz);

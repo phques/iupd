@@ -30,6 +30,7 @@ int main(string[] args)
         enforce(!error, to!string(error));
 
         auto dlg = IupGetHandle("main");
+        scope(exit) IupDestroy(dlg);
 
         /* sets callbacks */
         IupSetFunction( "ok_butt_cb", cast(Icallback)&ok_butt_cb);
@@ -39,8 +40,6 @@ int main(string[] args)
 
         /* main loop */
         IupMainLoop();
-
-        IupDestroy(dlg);
     }
     catch (Exception e) {
         IupMessage("error", e.msg.toStringz);
