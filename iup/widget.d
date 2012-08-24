@@ -14,6 +14,7 @@ import iup.iup;
 import iup.utild;
 
 
+// Simple class to wrap a IUP Ihandle
 class IupWidget {
 
     Ihandle* _ihandle;  // the IUP C object
@@ -21,7 +22,7 @@ class IupWidget {
     //------ CTORs -----
 
     // lookup IUP control 'widgetName' from a loaded LED file (or set w. IupSetHandle())
-    // throws the error msg returned by Iup if if failed
+    // throws if it failed
     this(string widgetName) {
         _ihandle = enforce(IupGetHandle(widgetName.toStringz),
                           "Cant find '" ~ widgetName ~ "' in the LED resource");
@@ -58,7 +59,7 @@ class IupWidget {
 
         // convert args to newArgs types
         foreach(i, arg; args)
-            newArgs[i] = chgArgType(arg);
+            newArgs[i] = iup.utild.chgArgType(arg);
 
         // proxy/dispatch/forward call too Iup function
         return mixin("Iup" ~ iupFuncName)(_ihandle, newArgs);
@@ -80,7 +81,7 @@ class IupWidget {
         return IupGetAttribute(_ihandle, toUpper(attribName).toStringz);
     }
 
-    // Set the our callback = destThis.methodName, (through a proxy)
+    // Set the our callback = destThis.methodName, (called through proxyCB())
     // save the destination 'this' in attribute "myObjThis"
     void setCallback(string methodName, Class)(Class destThis) {
         // save 'this' as an attribute in the IUP control
@@ -92,28 +93,45 @@ class IupWidget {
 }
 
 
-//--------------------
+/*------------------------------------*/
 
 /* C callback, called by IUP on events,
  * will dispatch to a method inside a D object.
  *   ie calls Class.callbackMethodName(ihandle)
  *
- * nb: ihandle is the IUP C object/control that generaed the event
+ * nb: ihandle is the IUP C object/control that generated the event
  */
 extern(C) int proxyCB(Class, string callbackMethodName)(Ihandle* ihandle) {
     // get 'this' of type Class, saved as attrib in the widget
     Class mythis = cast(Class)IupGetAttribute(ihandle, "myObjThis");
 
     // call this.callbackMethodName(ihandle);
-    return mixin("mythis." ~ callbackMethodName ~"(ihandle)");
+    return mixin("mythis."~callbackMethodName~"(ihandle)");
 }
 
 /*
  The basic picture is thus like this:
 
  1) User clicks a button,
-   2) IUP calls the button's callback pass the button's ihandle (proxyCB(ihandle))
+   2) IUP calls the button's callback passing the button's ihandle (proxyCB(ihandle))
      3) proxyCB() calls the registered Class.Method(button's ihandle)
 */
 
+/*------------------------------------*/
 
+/*
+ * IupWidget button = Iup!"Button"("Quit", nullz);
+ *        ie button = new IupWidget(IupButton("Quit", nullz));
+ */
+IupWidget Iup(string name, Args...)(Args args) {
+    // Create new type tuple, 'string' changed to 'const(char)*' etc
+    alias staticMap!(iup.utild.chgTypes, Args) NewTypes;
+    NewTypes newArgs;
+
+    // convert args to newArgs types
+    foreach(i, arg; args)
+        newArgs[i] = iup.utild.chgArgType(arg);
+
+    Ihandle* ih = mixin("Iup"~name)(newArgs);
+    return new IupWidget(ih);
+}

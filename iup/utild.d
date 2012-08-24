@@ -11,6 +11,15 @@ import iup.widget;
 
 //-----------------
 
+// shortcut for toStringz !!  aString.Z
+//const(char)* Z(string s) { return s.toStringz; }
+
+// D null is void*, does not auto cast to char*,
+// use nullz
+enum nullz = cast(const(char)*)null;
+
+//-----------------
+
 // used w. staticMap to change types in a type tuple (==> new type tuple)
 // changes string => const(char)*
 //         IupWidget => Ihandle*
