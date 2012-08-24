@@ -16,15 +16,15 @@ Ihandle* IupCells();
 Ihandle *IupColorBrowser();
 Ihandle *IupColorBrowser();
 Ihandle *IupGauge();
-Ihandle *IupDial(const char* type);
-Ihandle* IupMatrix(const char *action);
+Ihandle *IupDial(const(char)* type);
+Ihandle* IupMatrix(const(char)*action);
 
 /* IupMatrix utilities */
-void  IupMatSetAttribute  (Ihandle* ih, const char* name, int lin, int col, const char* value);
-void  IupMatStoreAttribute(Ihandle* ih, const char* name, int lin, int col, const char* value);
-char* IupMatGetAttribute  (Ihandle* ih, const char* name, int lin, int col);
-int   IupMatGetInt        (Ihandle* ih, const char* name, int lin, int col);
-float IupMatGetFloat      (Ihandle* ih, const char* name, int lin, int col);
-void  IupMatSetfAttribute (Ihandle* ih, const char* name, int lin, int col, const char* format, ...);
+void  IupMatSetAttribute  (Ihandle* ih, const(char)* name, int lin, int col, const(char)* value);
+void  IupMatStoreAttribute(Ihandle* ih, const(char)* name, int lin, int col, const(char)* value);
+char* IupMatGetAttribute  (Ihandle* ih, const(char)* name, int lin, int col);
+int   IupMatGetInt        (Ihandle* ih, const(char)* name, int lin, int col);
+float IupMatGetFloat      (Ihandle* ih, const(char)* name, int lin, int col);
+void  IupMatSetfAttribute (Ihandle* ih, const(char)* name, int lin, int col, const(char)* format, ...);
 
 }
