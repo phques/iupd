@@ -8,8 +8,10 @@ module iup.widget;
 import std.stdio;
 import std.string;
 import std.exception;
+import std.typetuple;
 
 import iup.iup;
+import iup.utild;
 
 
 class IupWidget {
@@ -40,7 +42,6 @@ class IupWidget {
 
     Ihandle* ihandle() { return _ihandle; }
 
-    Ihandle* opCall()                   { return _ihandle; }    // widget() ==> widget._ihandle
     Ihandle* opUnary(string s)() if (s == "*") { return _ihandle; }  // *widget ==> widget._ihandle
     Ihandle* opCast(Type = Ihandle*)()  { return _ihandle; }    // cast(Ihandle*) ==> widget._ihandle
 
@@ -48,26 +49,21 @@ class IupWidget {
 
     // auto forwards method calls to calls of Iup functions, passing the ihandle:
     //   widget.FuncAbc(...) ==> IupFuncAbc(_ihandle, ...)
-    auto opDispatch(string iupFuncName, Args...)(Args args) {
+    // converts string to const(char)*, IupWidget to Ihandle*
 
-        // Specialized: 1 string param, pass with .toStringz
-        static if (Args.length==1 && is(Args[0] == string)) {
-            return mixin("Iup" ~ iupFuncName)(_ihandle, args[0].toStringz);
-        }
-        // 2 string params
-        else static if (Args.length==2 && is(Args[0] == string) && is(Args[1] == string)) {
-            return mixin("Iup" ~ iupFuncName)(_ihandle, args[0].toStringz, args[1].toStringz);
-        }
-        // 1 string param + other non-string param
-        else static if (Args.length==2 && is(Args[0] == string) && !is(Args[1] == string)) {
-            return mixin("Iup" ~ iupFuncName)(_ihandle, args[0].toStringz, args[1]);
-        }
-        // generic case, pass paramters as-is,
-        // caller must use .toStringz if passing D strings
-        else {
-            return mixin("Iup" ~ iupFuncName ~ "(_ihandle, args)");
-        }
+    auto opDispatch(string iupFuncName, Args...)(Args args) {
+        // Create new type tuple, 'string' changed to 'const(char)*' etc
+        alias staticMap!(iup.utild.chgTypes, Args) NewTypes;
+        NewTypes newArgs;
+
+        // convert args to newArgs types
+        foreach(i, arg; args)
+            newArgs[i] = chgArgType(arg);
+
+        // proxy/dispatch/forward call too Iup function
+        return mixin("Iup" ~ iupFuncName)(_ihandle, newArgs);
     }
+
 
     //--------- setting/getting attributes ---------
     // (attribName not case sensitive, will be passed to IUP uppercased)
