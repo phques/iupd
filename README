@@ -12,6 +12,7 @@ Direct use of the IUP libraries C functions in the D code.
 Includes a small simple IupWidget class to wrap a IUP control/widget/dialog etc,
 uses opDisptach() to forward calls to the real IupXxx functions,
 also overrides index operators to read/set attributes (IupStoreAttribute)
+adds methods/functions that set callbacks for a control to point to a method in a class
 eg: 
 
     IupSetFunction("button1_cb", &button1_callback);
