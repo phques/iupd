@@ -6,6 +6,8 @@ module iup.utild;
 
 import std.string;
 import std.utf;
+import std.conv;
+
 import iup.iup;
 import iup.widget;
 
@@ -17,6 +19,7 @@ import iup.widget;
 // D null is void*, does not auto cast to char*,
 // use nullz
 enum nullz = cast(const(char)*)null;
+alias nullz NULL;
 
 //-----------------
 
@@ -56,4 +59,29 @@ int IupOpenD(string[] args) {
     int argc = argv.length;
     char** argvp = argv.ptr;
     return IupOpen(&argc, &argvp);
+}
+
+//-----------------
+
+// replaces IupSettAtt, handles converting strings ("") to stringz
+// calls IupSetAtt once then IupSetAttribute for the rest of the attributes
+// w. this we can compile the ledc generated C function
+Ihandle* _IupSetAtt(const char* name, Ihandle* ih, const(char*)[] params...)
+{
+    // newp = params converted to stringz
+    const(char)*[] newp = new const(char)*[params.length];
+    for (int i=0; i < params.length; i++){
+        newp[i] =  toUTFz!(const(char)*)(to!string(params[i]));
+    }
+
+    // call IupSetAtt & IupSetAttribute
+    if (newp.length >= 2) {
+        IupSetAtt(name, ih, newp[0], newp[1], nullz);
+
+        // ps: only do pairs, last params supposed to be == null anyways
+        for (int i = 2; i < (params.length & ~1); i+=2)
+            IupSetAttribute(ih, newp[i], newp[i+1]);
+    }
+
+    return ih;
 }
