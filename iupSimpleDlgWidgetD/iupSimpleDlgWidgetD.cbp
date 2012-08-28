@@ -17,6 +17,7 @@
 					<Add option="-fdebug" />
 				</Compiler>
 				<Linker>
+					<Add option="-fdebug" />
 					<Add directory="$(#iupd.lib)/bin/Debug" />
 				</Linker>
 			</Target>

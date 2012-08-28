@@ -19,7 +19,7 @@ import iup.utild;
 class IupWidget {
 
     Ihandle* _ihandle;  // the IUP C object
-    bool owner = false; // 'owns' the ihandle
+    bool _owner = false; // 'owns' the ihandle
 
     //------ CTORs -----
 
@@ -28,12 +28,12 @@ class IupWidget {
     this(string widgetName, Flag!"Owner" owner = No.Owner) {
         _ihandle = enforce(IupGetHandle(widgetName.toStringz),
                           "Cant find '" ~ widgetName ~ "' in the LED resource");
-        this.owner = owner;
+        this._owner = owner;
     }
 
     this(Ihandle* ih = null, Flag!"Owner" owner = No.Owner) {
         _ihandle = ih;
-        this.owner = owner;
+        this._owner = owner;
     }
 
     //-------
@@ -41,10 +41,10 @@ class IupWidget {
     // destroy the ihandle if we own it
     ~this() {
         debug writeln("IupWidget ~this()");
-        if (owner) {
+        if (_owner) {
             debug writeln("IupWidget ~this() owner");
             Destroy();
-            owner = false;
+            _owner = false;
         }
     }
 
@@ -53,9 +53,12 @@ class IupWidget {
         if (_ihandle != null){
             IupDestroy(_ihandle);
             _ihandle = null;
-            owner = false;
+            _owner = false;
         }
     }
+
+    bool owner() { return this._owner; }
+    void owner(bool owner) { this._owner = owner; }
 
     //------ accessing/casting to/the Ihandle* ------
 
@@ -98,6 +101,8 @@ class IupWidget {
     char* opIndex(string attribName) {
         return IupGetAttribute(_ihandle, toUpper(attribName).toStringz);
     }
+
+    /*-------------------------------------------*/
 
     // Set the our callback = destThis.methodName, (called through proxyCB())
     // save the destination 'this' in attribute "myObjThis"

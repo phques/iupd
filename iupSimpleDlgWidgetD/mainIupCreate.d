@@ -42,6 +42,7 @@ int main(string[] args)
 
         /* Creating the dialog */
         scope auto dialog = Iup!"Dialog"(vbox);
+        dialog.owner(true);
         dialog["TITLE"] = "Dialog Title";
         dialog.SetAttributeHandle("DEFAULTESC", quit_bt);
         dialog.SetAttributeHandle("DEFAULTENTER", quit_bt);

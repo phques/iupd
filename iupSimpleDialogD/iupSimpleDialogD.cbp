@@ -44,7 +44,7 @@
 			<Add library="iupd" />
 			<Add directory="$(#iup.lib)" />
 		</Linker>
-		<Unit filename="main3.d" />
+		<Unit filename="main.d" />
 		<Extensions>
 			<code_completion />
 			<envvars />
