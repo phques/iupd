@@ -19,7 +19,7 @@ import iup.utild;
 class IupWidget {
 
     Ihandle* _ihandle;  // the IUP C object
-    bool _owner = false; // 'owns' the ihandle
+    bool _owner = false; // 'owns' the ihandle, will destroy it in DTOR
 
     //------ CTORs -----
 
@@ -44,7 +44,6 @@ class IupWidget {
         if (_owner) {
             debug writeln("IupWidget ~this() owner");
             Destroy();
-            _owner = false;
         }
     }
 
@@ -185,6 +184,7 @@ IupWidget Iup(string name, Args...)(Args args) {
     foreach(i, arg; args)
         newArgs[i] = iup.utild.chgArgType(arg);
 
+    // call IupXxx, creator function & return it wrapped in a IupWidget
     Ihandle* ih = mixin("Iup"~name)(newArgs);
     return new IupWidget(ih);
 }

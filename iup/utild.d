@@ -74,14 +74,13 @@ Ihandle* _IupSetAtt(const char* name, Ihandle* ih, const(char*)[] params...)
         newp[i] =  toUTFz!(const(char)*)(to!string(params[i]));
     }
 
-    // call IupSetAtt & IupSetAttribute
-    if (newp.length >= 2) {
-        IupSetAtt(name, ih, newp[0], newp[1], nullz);
+    // 1st, call IupSetHandle
+    IupSetHandle(name, ih);
 
-        // ps: only do pairs, last params supposed to be == null anyways
-        for (int i = 2; i < (params.length & ~1); i+=2)
-            IupSetAttribute(ih, newp[i], newp[i+1]);
-    }
+    // call IupSetAttribute for attributes
+    newp.length = newp.length  & ~1; // pairs only, skip terminating null
+    for (int i = 0; i < newp.length; i+=2)
+        IupSetAttribute(ih, newp[i], newp[i+1]);
 
     return ih;
 }
