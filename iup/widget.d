@@ -121,6 +121,11 @@ class IupWidget {
         this.SetAttribute("myCbMethod", cast(char*)del.funcptr);
         this.SetCallback("ACTION", &proxy);
     }
+    void setDelegateSII(CbDelegateSII del) {
+        this.SetAttribute("myObjThis", cast(char*)del.ptr);
+        this.SetAttribute("myCbMethod", cast(char*)del.funcptr);
+        this.SetCallback("ACTION", cast(Icallback)&proxySII);
+    }
 }
 
 
@@ -166,6 +171,17 @@ extern(C) int proxy(Ihandle* ihandle) {
     del.funcptr = cast(CbFunction)IupGetAttribute(ihandle, "myCbMethod");
 
     return del(ihandle);
+}
+
+alias int delegate(Ihandle* ihandle, char *text, int item, int state) CbDelegateSII;
+alias int function(Ihandle* ihandle, char *text, int item, int state) CbFunctionSII;
+
+extern(C) int proxySII(Ihandle* ihandle, char *text, int item, int state) {
+    CbDelegateSII del;
+    del.ptr     = cast(void*)IupGetAttribute(ihandle, "myObjThis");
+    del.funcptr = cast(CbFunctionSII)IupGetAttribute(ihandle, "myCbMethod");
+
+    return del(ihandle, text, item, state);
 }
 
 
