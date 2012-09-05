@@ -95,6 +95,12 @@ class IupWidget {
         IupStoreAttribute(_ihandle, toUpper(attribName).toStringz, value.toStringz);
     }
 
+    // Set attribute
+    // widget["attribX"] = char* xyz
+    void opIndexAssign(const char* value, string attribName) {
+        IupStoreAttribute(_ihandle, toUpper(attribName).toStringz, value);
+    }
+
     // Get attribute
     // x = widget["attribX"];
     char* opIndex(string attribName) {
@@ -116,15 +122,21 @@ class IupWidget {
 
     // button2.setDelegate(&theObject.theMethod);
     // cf proxy() below
-    void setDelegate(CbDelegate del) {
+    void setDelegate(Delegate)(Delegate del, string cbName="ACTION") {
         this.SetAttribute("myObjThis", cast(char*)del.ptr);
         this.SetAttribute("myCbMethod", cast(char*)del.funcptr);
-        this.SetCallback("ACTION", &proxy);
-    }
-    void setDelegateSII(CbDelegateSII del) {
-        this.SetAttribute("myObjThis", cast(char*)del.ptr);
-        this.SetAttribute("myCbMethod", cast(char*)del.funcptr);
-        this.SetCallback("ACTION", cast(Icallback)&proxySII);
+
+        static if (is(Delegate : CbDelegate)) {
+            this.SetCallback(cbName, &proxy);
+        }
+        else static if (is(Delegate : CbDelegateSII)) {
+            this.SetCallback(cbName, cast(Icallback)&proxySII);
+        }
+        else static if (is(Delegate : CbDelegateSIII)) {
+            this.SetCallback(cbName, cast(Icallback)&proxySIII);
+        }
+        else
+            static assert(false, "unknown callback type");
     }
 }
 
@@ -173,15 +185,28 @@ extern(C) int proxy(Ihandle* ihandle) {
     return del(ihandle);
 }
 
-alias int delegate(Ihandle* ihandle, char *text, int item, int state) CbDelegateSII;
-alias int function(Ihandle* ihandle, char *text, int item, int state) CbFunctionSII;
+//--------
+alias int delegate(Ihandle* ihandle, char*, int, int) CbDelegateSII;
+alias int function(Ihandle* ihandle, char*, int, int) CbFunctionSII;
 
-extern(C) int proxySII(Ihandle* ihandle, char *text, int item, int state) {
+extern(C) int proxySII(Ihandle* ihandle, char *text, int i1, int i2) {
     CbDelegateSII del;
     del.ptr     = cast(void*)IupGetAttribute(ihandle, "myObjThis");
     del.funcptr = cast(CbFunctionSII)IupGetAttribute(ihandle, "myCbMethod");
 
-    return del(ihandle, text, item, state);
+    return del(ihandle, text, i1, i2);
+}
+
+//--------
+alias int delegate(Ihandle* ihandle, char*, int, int, int) CbDelegateSIII;
+alias int function(Ihandle* ihandle, char*, int, int, int) CbFunctionSIII;
+
+extern(C) int proxySIII(Ihandle* ihandle, char *text, int i1, int i2, int i3) {
+    CbDelegateSIII del;
+    del.ptr     = cast(void*)IupGetAttribute(ihandle, "myObjThis");
+    del.funcptr = cast(CbFunctionSIII)IupGetAttribute(ihandle, "myCbMethod");
+
+    return del(ihandle, text, i1, i2, i3);
 }
 
 
